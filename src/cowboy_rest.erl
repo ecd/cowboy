@@ -896,6 +896,11 @@ set_resp_expires(Req, State) ->
 	case Expires of
 		Expires when is_atom(Expires) ->
 			{Req2, State2};
+                <<"0">> ->
+                        ExpiresBin = cowboy_clock:rfc1123({{1970,1,1},{1,1,1}}),
+                        Req3 = cowboy_req:set_resp_header(
+                                 <<"expires">>, ExpiresBin, Req2),
+                        {Req3, State2};
 		Expires ->
 			ExpiresBin = cowboy_clock:rfc1123(Expires),
 			Req3 = cowboy_req:set_resp_header(
